@@ -22,14 +22,35 @@ class Codificar:
         self.__msg_decodificada = None
 
     def __repr__(self):
-        return (    f'\n\n...> Entrada.......: [{self.entrada}]'
-                        f' - len:{len(self.entrada)}'
-                    f'\n\n...> Decodificado..: [{self.decodificado}]'
-                        f' - len:{len(self.decodificado)}'
-                    f'\n\n...> Codificado....: [{self.codificado}]'
-                        f' - len:{len(self.codificado)}'
-                    f'\n\n...> Validade......: [{self.valido}]\n'
-                    )
+        ret = ''
+
+        len_entrada = 0
+        len_decodificado = 0
+        len_codificado = 0
+
+        if self.entrada != None:
+            len_entrada = len(self.entrada)
+
+        if self.decodificado != None:
+            len_decodificado = len(self.decodificado)
+
+        if self.codificado != None:
+            len_codificado = len(self.codificado)
+
+        ret = (
+            f'\n\n...> Entrada.......: [{self.entrada}]'
+            f' - len:{len_entrada}'
+
+            f'\n\n...> Decodificado..: [{self.decodificado}]'
+            f' - len:{len_decodificado}'
+
+            f'\n\n...> Codificado....: [{self.codificado}]'
+            f' - len:{len_codificado}'
+
+            f'\n\n...> Validade......: [{self.valido}]\n'                        
+        )
+
+        return ret
     
     @property
     def entrada(self):
@@ -63,17 +84,13 @@ class Codificar:
     # ------------------------------------------------------------------
     def _cifrar(self, byte):
         ret = ''
-        error = False
 
         caracteres = car.char
         if byte in caracteres:
             cif = self.cifra
             ret = chr(ord(byte) + cif)
         else:
-            error = True
-
-        if error:
-            raise ValueError(f'Símbolo [{byte}] não previsto')
+            raise ValueError(f'Símbolo [{byte}] não previsto')            
 
         return ret
 
