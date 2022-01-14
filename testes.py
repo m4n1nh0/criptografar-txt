@@ -7,27 +7,43 @@ from codificador import Codificar
 
 
 class CodificadorTestes(unittest.TestCase):
-    
-    obj = Codificar()
 
     def test_len_msg_str(self):
+        obj = Codificar()
         self.assertEqual(
-            self.obj._len_msg_str('Mensagem'),
+            obj._len_msg_str('Mensagem'),
             '000008'
         )
 
-
     def test_len_msg(self):
+        obj = Codificar()
         self.assertEqual(
-            self.obj._len_msg('coded=222333kkklll'),
+            obj._len_msg('coded=222333kkklll'),
             111222
         )
 
-    def test_integridade(self):
+    def test_entrada(self):
         text = 'Um mensagem qualquer! '
         obj = Codificar(text)
         self.assertEqual(
-            self.obj.entrada,
+            obj.entrada,
+            text
+        )
+
+    def test_saida(self):
+        text = 'Um mensagem qualquer! '
+        obj = Codificar(text)
+        self.assertNotEqual(
+            obj.criptografar(text),
+            text
+        )
+
+    def test_descriptografar(self):
+        text = 'Um mensagem qualquer! '
+        obj = Codificar(text)
+        obj.criptografar(text)
+        self.assertEqual(
+            obj.decriptografar(obj.codificado),
             text
         )
 

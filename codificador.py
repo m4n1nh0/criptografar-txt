@@ -31,6 +31,12 @@ class Codificar:
         if self.entrada != None:
             len_entrada = len(self.entrada)
 
+        if self.decodificado != None:
+            len_decodificado = len(self.decodificado)
+
+        if self.codificado != None:
+            len_codificado = len(self.codificado)
+
         ret = (
             f'\n\n...> Entrada.......: [{self.entrada}]'
             f' - len:{len_entrada}'
