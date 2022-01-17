@@ -5,6 +5,7 @@ import random
 import os
 import caracteres as car
 
+
 CURR_DIR = os.path.dirname(os.path.realpath(__name__))
 
 class Codificar:
@@ -210,5 +211,6 @@ class Codificar:
             ind += 1
             if (ind > x) and (ind <= (len_da_msg) + x):
                 ret += self._decifrar(t)
-            
+
+        self.decodificado = ret
         return ret
