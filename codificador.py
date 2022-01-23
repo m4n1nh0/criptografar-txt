@@ -1,6 +1,7 @@
 
 
 import math
+from operator import index
 import random
 import os
 import caracteres as car
@@ -15,6 +16,7 @@ class Codificar:
     buffer_min = 0.5
     limite_bytes = 999000
     pref1 = 'coded='
+    len_tail = 10
 
     def __init__(self, msg_entrada=None):
         self.__msg_entrada = msg_entrada
@@ -48,7 +50,7 @@ class Codificar:
             f'\n\n...> Codificado....: [{self.codificado}]'
             f' - len:{len_codificado}'
 
-            f'\n\n...> Validade......: [{self.valido}]\n'                        
+            f'\n\n...> Validade......: [{self.valido}]\n'
         )
 
         return ret
@@ -83,15 +85,70 @@ class Codificar:
 
 
     # ------------------------------------------------------------------
-    def _cifrar(self, byte):
+    def _embaralhar(self, texto):
+        ret = ''
+
+        for t in texto:
+            ret += self._cifrar(t)
+
+        x = len(ret)
+        y = x - self.len_tail
+        cifra_alternada_str = ret[y:x]
+        cifra_alternada_suja= []
+
+        caracteres = car.char
+
+        for s in cifra_alternada_str:
+            cifra_alternada_suja.append( caracteres.index(s) )
+
+        cifra_alternada = []
+
+        for c in cifra_alternada_suja:
+            if c not in cifra_alternada:
+                cifra_alternada.append(c)
+
+        msg_embaralhada = ''
+        ind = 0
+        lst_ind = len(cifra_alternada)
+        for r in ret:
+            msg_embaralhada += self._cifrar(r, cifra_alternada[ind])
+            ind += 1
+
+            if ind >= lst_ind:
+                ind = 0
+
+        return ret
+
+    def _cifrar(self, byte, par_cifra=0):
         ret = ''
 
         caracteres = car.char
-        if byte in caracteres:
-            cif = self.cifra
-            ret = chr(ord(byte) + cif)
+        tot_idx_lista = len(caracteres) - 1
+
+        if par_cifra == 0:
+
+            if byte in caracteres:
+                cif = self.cifra                
+                idx_byte = caracteres.index(byte)
+
+                if idx_byte == tot_idx_lista:
+                    ret = caracteres[0]
+                else:
+                    ret = caracteres[idx_byte + cif]
+            else:
+                raise ValueError(f'Símbolo [{byte}] não previsto')
         else:
-            raise ValueError(f'Símbolo [{byte}] não previsto')            
+            if byte in caracteres:
+                idx_byte = caracteres.index(byte)
+                cif = idx_byte + par_cifra
+
+                if cif > tot_idx_lista:
+                    cif = cif - tot_idx_lista
+
+                #todo: aqui tá dando pau
+                ret = caracteres[idx_byte + cif]
+            else:
+                raise ValueError(f'2-Símbolo [{byte}] não previsto')
 
         return ret
 
@@ -189,8 +246,10 @@ class Codificar:
         texto = f'{pref2}{texto}'        
         texto = self._add_buffer(texto, buffer - len(str(self.limite_bytes)) )
 
-        for t in texto:
-            ret += self._cifrar(t)
+        ret = self._embaralhar(texto)
+
+        #for t in texto:
+        #    ret += self._cifrar(t)
         
         ret = f'{self.pref1}{ret}'
 
