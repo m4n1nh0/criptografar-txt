@@ -1,7 +1,6 @@
 
 
 import math
-from operator import index
 import random
 import os
 import caracteres as car
@@ -91,32 +90,33 @@ class Codificar:
         for t in texto:
             ret += self._cifrar(t)
 
+        caracteres = car.char
         x = len(ret)
         y = x - self.len_tail
         cifra_alternada_str = ret[y:x]
-        cifra_alternada_suja= []
-
-        caracteres = car.char
-
-        for s in cifra_alternada_str:
-            cifra_alternada_suja.append( caracteres.index(s) )
-
+        
         cifra_alternada = []
-
-        for c in cifra_alternada_suja:
-            if c not in cifra_alternada:
-                cifra_alternada.append(c)
+        for s in cifra_alternada_str:
+            cifra_alternada.append( caracteres.index(s) )
 
         msg_embaralhada = ''
         ind = 0
+        ind_len = 0
         lst_ind = len(cifra_alternada)
+        len_txt_embaralhar = len(ret) - self.len_tail
         for r in ret:
-            msg_embaralhada += self._cifrar(r, cifra_alternada[ind])
-            ind += 1
+            if ind_len < len_txt_embaralhar:                
+                msg_embaralhada += self._cifrar(r, cifra_alternada[ind])
+                ind += 1
 
-            if ind >= lst_ind:
-                ind = 0
+                if ind >= lst_ind:
+                    ind = 0
+            else:
+                msg_embaralhada += r
 
+            ind_len +=1
+
+        ret = msg_embaralhada
         return ret
 
     def _cifrar(self, byte, par_cifra=0):
@@ -140,13 +140,13 @@ class Codificar:
         else:
             if byte in caracteres:
                 idx_byte = caracteres.index(byte)
-                cif = idx_byte + par_cifra
+                cif = 0
 
-                if cif > tot_idx_lista:
-                    cif = cif - tot_idx_lista
+                idx_cifrado = idx_byte + par_cifra
+                if idx_cifrado > tot_idx_lista:
+                    idx_cifrado = idx_cifrado - tot_idx_lista
 
-                #todo: aqui tá dando pau
-                ret = caracteres[idx_byte + cif]
+                ret = caracteres[idx_cifrado]
             else:
                 raise ValueError(f'2-Símbolo [{byte}] não previsto')
 
@@ -203,6 +203,7 @@ class Codificar:
         return ret
 
     # ------
+    """
     def _len_msg(self, msg):
         ret = ''
 
@@ -216,6 +217,7 @@ class Codificar:
         
         ret = int(text_decifrado)
         return ret
+    """
 
     # ------------------------------------------------------------------
     def validar_texto(self, texto):
@@ -242,26 +244,27 @@ class Codificar:
 
         buffer = self._calc_buffer(texto)
         pref2 = self._len_msg_str(texto)
-
         texto = f'{pref2}{texto}'        
         texto = self._add_buffer(texto, buffer - len(str(self.limite_bytes)) )
-
-        ret = self._embaralhar(texto)
-
-        #for t in texto:
-        #    ret += self._cifrar(t)
-        
+        ret = self._embaralhar(texto)        
         ret = f'{self.pref1}{ret}'
 
         self.codificado = ret
         self.decodificado = self.decriptografar(self.codificado)
+        """
         if not self.valido:
             raise ValueError('Não foi possível garantir a integridade da mensagem')
+        """
+
         return ret
 
     
     def decriptografar(self, texto):
         ret = ''
+
+        caracteres = car.char
+
+        """
         len_da_msg = self._len_msg(texto)
 
         ind = 0        
@@ -272,4 +275,6 @@ class Codificar:
                 ret += self._decifrar(t)
 
         self.decodificado = ret
+        """
+
         return ret

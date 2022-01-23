@@ -8,7 +8,7 @@ import testes
 #msg_entrada = "Lorem Ipsum is simply dummy text of the printing and typesetting."
 #msg_entrada = "Teste"
 #msg_entrada = ""
-msg_entrada = "0123 Vitor ()"
+msg_entrada = ")(ABCDEFG ''2023"
 
 x = cod.Codificar()
 x.criptografar(msg_entrada)
