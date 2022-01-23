@@ -153,9 +153,35 @@ class Codificar:
         return ret
 
     # ------
-    def _decifrar(self, byte):
-        cif = self.cifra
-        ret = chr(ord(byte) - cif)
+    def _decifrar(self, byte, par_cif=0):
+        ret = ''
+
+        caracteres = car.char
+        tot_idx_lista = len(caracteres) - 1
+
+        if par_cif == 0:
+            if byte in caracteres:
+                cif = self.cifra                
+                idx_byte = caracteres.index(byte)
+
+                if idx_byte == tot_idx_lista:
+                    ret = caracteres[0]
+                else:
+                    ret = caracteres[idx_byte - cif]
+            else:
+                raise ValueError(f'2-Erro - [{byte}] não é previsto')
+        else:
+            if byte in caracteres:
+                idx_byte = caracteres.index(byte)
+                cif = 0
+
+                idx_decifrado = idx_byte - par_cif
+                if idx_decifrado < 0:
+                    idx_decifrado = idx_decifrado + tot_idx_lista
+                
+                ret = caracteres[idx_decifrado]                
+            else:
+                raise ValueError(f'2-Erro - [{byte}] não é previsto')
 
         return ret
 
@@ -261,20 +287,34 @@ class Codificar:
     
     def decriptografar(self, texto):
         ret = ''
+        len_coded = len(self.pref1)
+        len_texto = len(texto)
+
+        texto = texto[len_coded:len_texto]
 
         caracteres = car.char
 
-        """
-        len_da_msg = self._len_msg(texto)
+        x = len(texto)
+        y = x - self.len_tail
+        cifra_alternada_str = texto[y:x]
+        cifra_alternada = []
+        for s in cifra_alternada_str:
+            cifra_alternada.append( caracteres.index(s) )
 
-        ind = 0        
-        x = ( len(str(self.limite_bytes)) + len(str(self.pref1)))
+        ind = 0
+        msg_desembaralhada = ''
         for t in texto:
+            msg_desembaralhada += self._decifrar(t, cifra_alternada[ind])
             ind += 1
-            if (ind > x) and (ind <= (len_da_msg) + x):
-                ret += self._decifrar(t)
+            if ind >= self.len_tail:
+                ind = 0
+
+        for m in msg_desembaralhada:
+            ret += self._decifrar(m)
+
+        x = len(str(self.limite_bytes))
+        len_msg = int(ret[0:x])
+        ret = ret[x:len_msg + x]
 
         self.decodificado = ret
-        """
-
         return ret
