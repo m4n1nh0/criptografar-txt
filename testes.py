@@ -5,7 +5,6 @@ import unittest
 
 from codificador import Codificar
 
-
 class CodificadorTestes(unittest.TestCase):
 
     def test_len_msg_str(self):
@@ -50,4 +49,8 @@ class CodificadorTestes(unittest.TestCase):
 
 if __name__ == '__main__':
     print(f'\n' * 10)
+    unittest.main()
+
+
+def teste_completo():
     unittest.main()
